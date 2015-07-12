@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Video processing</title>
+  <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.indigo-pink.min.css">
+  <script src="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.min.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link href="http://cdnjs.cloudflare.com/ajax/libs/cropper/0.10.1/cropper.min.css" rel="stylesheet">
+  <style>
+    #player {
+      display: none;
+    }
+    #panel, #container {
+      float: left;
+    }
+    #panel {
+      width: 300px;
+      display: none;
+      padding: 20px;
+    }
+    #addWatcher {
+    }
+    #watchers {
+      display: none;
+    }
+    .data {
+      min-width: 170px;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropper/0.10.1/cropper.min.js"></script>
+  <script>
+    var canvas = document.createElement("canvas");
+    var ctx1 = canvas.getContext('2d');
+
+    function init() {
+      "use strict";
+      const scale = 0.5;
+
+      const videoFile = document.getElementById("uploadInput").files[0];
+      const videoURL = URL.createObjectURL(videoFile);
+      const player = document.getElementById('player');
+      const watchers = [];
+      var cropperElem = null;
+
+      player.src = videoURL;
+
+      const c2 = document.getElementById('c2');
+      const ctx2 = c2.getContext('2d');
+
+      player.addEventListener('canplay', function () {
+        $('#uploadInput').hide();
+        player.currentTime = 0.5; // Triggers seek
+
+        $('#container').width(player.videoWidth * scale);
+        canvas.width = player.videoWidth * scale;
+        canvas.height = player.videoHeight * scale;
+        c2.width = player.videoWidth * scale;
+        c2.height = player.videoHeight * scale;
+
+      });
+
+      player.addEventListener('seeked', function () {
+        ctx2.drawImage(player, 0, 0, canvas.width, canvas.height);
+
+        cropperElem = $('#container > canvas').cropper({
+          guides: false,
+          center: false,
+          background: false,
+          movable: false,
+          rotatable: false,
+          zoomable: false,
+          mouseWheelZoom: false,
+          touchDragZoom: false,
+          doubleClickToggle: false
+        });
+
+        $('#panel, #addWatcher').show();
+      }, false);
+      $('#addWatcher').click(function (e) {
+        $('.help').hide();
+        $('#watchers').show();
+        const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+        cropperElem.cropper('clear');
+        createWatcher(data);
+        return false;
+      });
+
+      $('#startProcess').click(function() {
+        $('#addWatcher').hide();
+        cropperElem.cropper('destroy');
+        $('#container, #startProcess').hide();
+        $('#panel').css({ width: '100%' });
+        player.play();
+        next();
+      });
+
+      function createWatcher(data) {
+        const row = $('<tr><td class="preview"></td><td class="data"></td></tr>');
+        const newCanvas = document.createElement('canvas');
+        newCanvas.width = data.width;
+        newCanvas.height = data.height;
+        const ctx = newCanvas.getContext('2d');
+        data.context = ctx;
+        const frame = ctx2.getImageData(data.left, data.top, data.width, data.height);
+        data.reference = frame.data;
+        data.result = [];
+
+
+        ctx.putImageData(frame, 0, 0);
+        watchers.push(data);
+        row.find('.preview').append(newCanvas);
+        $('#watchers > tbody').append(row);
+      }
+
+      function next() {
+        if (player.paused || player.ended) {
+          return;
+        }
+        computeFrame();
+        window.requestAnimationFrame(next);
+      }
+
+      function computeFrame() {
+        ctx1.drawImage(player, 0, 0, canvas.width, canvas.height);
+        for (var i = 0; i < watchers.length; i++) {
+          const data = watchers[i];
+          const frame = ctx1.getImageData(data.left, data.top, data.width, data.height);
+          var diff = 0;
+          for (var j = 0; j < frame.data.length; j++) {
+            if (j % 4 !== 3) diff += Math.abs(frame.data[j] - data.reference[j]);
+          }
+          diff = diff / frame.data.length;
+          if (watchers[i].max < diff) {
+            watchers[i].max = diff;
+          }
+          if (diff > 10) {
+            console.log(i, player.currentTime, diff);
+            watchers[i].result.push({ time: player.currentTime, value: diff});
+          }
+          watchers[i].context.putImageData(frame, 0, 0);
+        }
+        return;
+      }
+      player.addEventListener('ended', function () {
+        for (var i = 0; i < watchers.length; i++) {
+          const data = watchers[i].result.map(function (item) { return item.time + ', ' + item.value }).join(';');
+          console.log(data);
+        }
+      });
+    }
+  </script>
+</head>
+
+<body>
+<form name="uploadForm">
+  <input id="uploadInput" type="file" name="myVideo" onchange="init();" />
+</form>
+<video id="player" controls muted></video>
+<div id="container">
+  <canvas id="c2"></canvas>
+</div>
+<div id="panel">
+  <table id="watchers" >
+    <thead>
+    <tr>
+      <th>Preview</th>
+      <th>Data</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+  <span class="help">Select an area of interest and press: </span><button id="addWatcher" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+    <i class="material-icons">add</i>
+  </button>
+  <button id="startProcess" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect">
+    Start process
+  </button>
+</div>
+</body>
+</html>
