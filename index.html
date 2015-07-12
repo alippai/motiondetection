@@ -27,6 +27,9 @@
     .data {
       min-width: 170px;
     }
+    #startProcess {
+      display: none;
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropper/0.10.1/cropper.min.js"></script>
@@ -80,7 +83,7 @@
       }, false);
       $('#addWatcher').click(function (e) {
         $('.help').hide();
-        $('#watchers').show();
+        $('#watchers, #startProcess').show();
         const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
         cropperElem.cropper('clear');
         createWatcher(data);
