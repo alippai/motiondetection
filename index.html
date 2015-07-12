@@ -33,6 +33,7 @@
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropper/0.10.1/cropper.min.js"></script>
+  <script src="http://code.highcharts.com/highcharts.js"></script>
   <script>
     var canvas = document.createElement("canvas");
     var ctx1 = canvas.getContext('2d');
@@ -100,7 +101,7 @@
       });
 
       function createWatcher(data) {
-        const row = $('<tr><td class="preview"></td><td class="data"></td></tr>');
+        const row = $('<tr><td class="preview"></td><td class="data"><div class="container" style="width: 1400px; height: 200px;"></div></td></tr>');
         const newCanvas = document.createElement('canvas');
         newCanvas.width = data.width;
         newCanvas.height = data.height;
@@ -108,8 +109,54 @@
         data.context = ctx;
         const frame = ctx2.getImageData(data.left, data.top, data.width, data.height);
         data.reference = frame.data;
-        data.result = [];
-
+        data.last = 0;
+        data.lastTime = 0;
+        const chart = $(row).find('.container').highcharts({
+          chart: {
+            type: 'spline',
+            animation: Highcharts.svg, // don't animate in old IE
+            marginRight: 10,
+            events: {
+              load: function () {
+                data.series = this.series[0];
+              }
+            }
+          },
+          xAxis: {
+            type: 'linear',
+            tickPixelInterval: 20,
+            min: 0,
+            max: player.duration
+          },
+          yAxis: {
+            min: 0,
+            type: 'linear',
+            plotLines: [{
+              value: 0,
+              width: 1,
+              color: '#808080'
+            }]
+          },
+          title: {
+            text: ''
+          },
+          legend: {
+            enabled: false
+          },
+          exporting: {
+            enabled: false
+          },
+          series: [{
+            name: 'Data',
+            data: [],
+            states: {
+              hover: {
+                enabled: false
+              }
+            }
+          }]
+        });
+        data.chart = chart;
 
         ctx.putImageData(frame, 0, 0);
         watchers.push(data);
@@ -135,12 +182,10 @@
             if (j % 4 !== 3) diff += Math.abs(frame.data[j] - data.reference[j]);
           }
           diff = diff / frame.data.length;
-          if (watchers[i].max < diff) {
-            watchers[i].max = diff;
-          }
-          if (diff > 10) {
-            console.log(i, player.currentTime, diff);
-            watchers[i].result.push({ time: player.currentTime, value: diff});
+          if (Math.abs(data.last - diff) > 4 || (player.currentTime - data.lasttime) > 0.1)  {
+            data.last = diff;
+            data.lasttime = player.currentTime;
+            data.series.addPoint([player.currentTime, diff], true, false);
           }
           watchers[i].context.putImageData(frame, 0, 0);
         }
