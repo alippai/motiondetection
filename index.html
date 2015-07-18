@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Video processing</title>
   <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.indigo-pink.min.css">
-  <script src="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link href="http://cdnjs.cloudflare.com/ajax/libs/cropper/0.10.1/cropper.min.css" rel="stylesheet">
   <style>
@@ -32,8 +31,11 @@
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropper/0.10.1/cropper.min.js"></script>
   <script src="http://code.highcharts.com/highcharts.js"></script>
+  <script src="moves.js"></script>
+  <script src="files.js"></script>
   <script>
     var canvas = document.createElement("canvas");
     var ctx1 = canvas.getContext('2d');
@@ -62,7 +64,6 @@
         canvas.height = player.videoHeight * scale;
         c2.width = player.videoWidth * scale;
         c2.height = player.videoHeight * scale;
-
       });
 
       player.addEventListener('seeked', function () {
