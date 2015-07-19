@@ -27,7 +27,7 @@ function init() {
 
   player.addEventListener("canplay", function () {
     $("#uploadInput").hide();
-    player.currentTime = 0.05; // Triggers seek
+    player.currentTime = 0.5; // Triggers seek
 
     $("#container").width(player.videoWidth * scale);
 
@@ -37,19 +37,6 @@ function init() {
 
   player.addEventListener("seeked", function () {
     ctx2.drawImage(player, 0, 0, c2.width, c2.height);
-
-    /*addWatcher('LH', {"left":97,"top":134,"width":89,"height":34});
-    $('.left-hand .position').text(JSON.stringify({"left":97,"top":134,"width":89,"height":34}));
-    addWatcher('CH', {"left":205,"top":149,"width":79,"height":46});
-    $('.center-hand .position').text(JSON.stringify({"left":205,"top":149,"width":79,"height":46}));
-    addWatcher('RH', {"left":310,"top":137,"width":85,"height":30});
-    $('.right-hand .position').text(JSON.stringify({"left":310,"top":137,"width":85,"height":30}));
-    addWatcher('LF', {"left":169,"top":302,"width":39,"height":158});
-    $('.left-foot .position').text(JSON.stringify({"left":169,"top":302,"width":39,"height":158}));
-    addWatcher('CF', {"left":183,"top":469,"width":105,"height":30});
-    $('.center-foot .position').text(JSON.stringify({"left":183,"top":469,"width":105,"height":30}));
-    addWatcher('RF', {"left":294,"top":322,"width":50,"height":146});
-    $('.right-foot .position').text(JSON.stringify({"left":294,"top":322,"width":50,"height":146}));*/
 
     $(".left-hand .position").text(JSON.stringify(leftPositions.LH));
     addWatcher("LLH", leftPositions.LH);
@@ -85,50 +72,50 @@ function init() {
 
     $("#panel").show();
   }, false);
-  /*
-    $('.left-hand button').click(() => {
-      const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-      cropperElem.cropper('clear');
-      $('.left-hand .position').text(JSON.stringify(data));
-      addWatcher('LH', data);
-      return false;
-    });
-    $('.center-hand button').click(() => {
-      const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-      cropperElem.cropper('clear');
-      $('.center-hand .position').text(JSON.stringify(data));
-      addWatcher('CH', data);
-      return false;
-    });
-    $('.right-hand button').click(() => {
-      const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-      cropperElem.cropper('clear');
-      $('.right-hand .position').text(JSON.stringify(data));
-      addWatcher('RH', data);
-      return false;
-    });
-    $('.left-foot button').click(() => {
-      const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-      cropperElem.cropper('clear');
-      $('.left-foot .position').text(JSON.stringify(data));
-      addWatcher('LF', data);
-      return false;
-    });
-    $('.center-foot button').click(() => {
-      const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-      cropperElem.cropper('clear');
-      $('.center-foot .position').text(JSON.stringify(data));
-      addWatcher('CF', data);
-      return false;
-    });
-    $('.right-foot button').click(() => {
-      const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-      cropperElem.cropper('clear');
-      $('.right-foot .position').text(JSON.stringify(data));
-      addWatcher('RF', data);
-      return false;
-    });
-  */
+
+  $(".left-hand button").click(function () {
+    var data = cropperElem.cropper("getCropBoxData"); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper("clear");
+    $(".left-hand .position").text(JSON.stringify(data));
+    addWatcher("LH", data);
+    return false;
+  });
+  $(".center-hand button").click(function () {
+    var data = cropperElem.cropper("getCropBoxData"); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper("clear");
+    $(".center-hand .position").text(JSON.stringify(data));
+    addWatcher("CH", data);
+    return false;
+  });
+  $(".right-hand button").click(function () {
+    var data = cropperElem.cropper("getCropBoxData"); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper("clear");
+    $(".right-hand .position").text(JSON.stringify(data));
+    addWatcher("RH", data);
+    return false;
+  });
+  $(".left-foot button").click(function () {
+    var data = cropperElem.cropper("getCropBoxData"); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper("clear");
+    $(".left-foot .position").text(JSON.stringify(data));
+    addWatcher("LF", data);
+    return false;
+  });
+  $(".center-foot button").click(function () {
+    var data = cropperElem.cropper("getCropBoxData"); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper("clear");
+    $(".center-foot .position").text(JSON.stringify(data));
+    addWatcher("CF", data);
+    return false;
+  });
+  $(".right-foot button").click(function () {
+    var data = cropperElem.cropper("getCropBoxData"); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper("clear");
+    $(".right-foot .position").text(JSON.stringify(data));
+    addWatcher("RF", data);
+    return false;
+  });
+
   $("#startProcess").click(function () {
     cropperElem.cropper("destroy");
     $("#startProcess").hide();
@@ -154,40 +141,40 @@ function init() {
 
   function computeFrame() {
     ctx2.drawImage(player, 0, 0, c2.width, c2.height);
-    var currentItem = Math.floor(player.currentTime * 100 / 120);
+    var currentItem = Math.floor((player.currentTime - 100 / 120) * 100 / 120);
+    if (currentItem >= 0) {
 
-    $("#result tr").removeClass("current");
-    for (var _i = 0; _i < currentItem; _i++) {
-      $("#event-" + _i).addClass("completed");
-    }
-    $("#event-" + currentItem).addClass("current");
+      $("#result tr").removeClass("current");
+      for (var _i = 0; _i < currentItem; _i++) {
+        $("#event-" + _i).addClass("completed");
+      }
+      $("#event-" + currentItem).addClass("current");
 
-    var data = watchers["L" + leftMoves[currentItem]];
-    var frame = ctx2.getImageData(data.left, data.top, data.width, data.height);
-    var diff = 0;
-    for (var j = 0; j < frame.data.length; j++) {
-      if (j % 4 !== 3) diff += Math.abs(frame.data[j] - data.reference[j]);
-    }
-    diff = diff / frame.data.length;
-    console.log(diff);
-    if (diff > 3 && !leftResults[currentItem]) {
-      var result = player.currentTime - currentItem * 120 / 100;
-      leftResults[currentItem] = result;
-      $("#event-" + currentItem + " .leftResult").text(result.toFixed(5));
-    }
+      var data = watchers["L" + leftMoves[currentItem]];
+      var frame = ctx2.getImageData(data.left, data.top, data.width, data.height);
+      var diff = 0;
+      for (var j = 0; j < frame.data.length; j++) {
+        if (j % 4 !== 3) diff += Math.abs(frame.data[j] - data.reference[j]);
+      }
+      diff = diff / frame.data.length;
+      if (diff > 5 && !leftResults[currentItem]) {
+        var result = player.currentTime - 100 / 120 - currentItem * 120 / 100;
+        leftResults[currentItem] = result;
+        $("#event-" + currentItem + " .leftResult").text(result.toFixed(5));
+      }
 
-    var data2 = watchers["R" + rightMoves[currentItem]];
-    var frame2 = ctx2.getImageData(data2.left, data2.top, data2.width, data2.height);
-    var diff2 = 0;
-    for (var j = 0; j < frame2.data.length; j++) {
-      if (j % 4 !== 3) diff2 += Math.abs(frame2.data[j] - data2.reference[j]);
-    }
-    diff2 = diff2 / frame2.data.length;
-    console.log(diff2);
-    if (diff2 > 3 && !rightResults[currentItem]) {
-      var result2 = player.currentTime - currentItem * 120 / 100;
-      rightResults[currentItem] = result2;
-      $("#event-" + currentItem + " .rightResult").text(result2.toFixed(5));
+      var data2 = watchers["R" + rightMoves[currentItem]];
+      var frame2 = ctx2.getImageData(data2.left, data2.top, data2.width, data2.height);
+      var diff2 = 0;
+      for (var j = 0; j < frame2.data.length; j++) {
+        if (j % 4 !== 3) diff2 += Math.abs(frame2.data[j] - data2.reference[j]);
+      }
+      diff2 = diff2 / frame2.data.length;
+      if (diff2 > 5 && !rightResults[currentItem]) {
+        var result2 = player.currentTime - 100 / 120 - currentItem * 120 / 100;
+        rightResults[currentItem] = result2;
+        $("#event-" + currentItem + " .rightResult").text(result2.toFixed(5));
+      }
     }
   }
   player.addEventListener("ended", function () {

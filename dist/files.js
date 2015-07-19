@@ -49,9 +49,26 @@ window.files = {
   SS2_A055_A056x: { left: moves2, right: moves1 },
   SS2_A060_A085x: { left: moves2, right: moves1 },
   SS2_A087_A086x: { left: moves2, right: moves1 },
-  SS2_A092_A093x: { left: moves2, right: moves1 },
+  SS2_A092_A093x: {
+    left: moves2, right: moves1,
+    leftPosition: {
+      LH: { left: 64, top: 117, width: 107, height: 69 },
+      CH: { left: 151, top: 119, width: 56, height: 54 },
+      RH: { left: 380, top: 95, width: 97, height: 72 },
+      LF: { left: 110, top: 434, width: 69, height: 46 },
+      CF: { left: 190, top: 482, width: 51, height: 28 },
+      RF: { left: 354, top: 455, width: 42, height: 34 }
+    },
+    rightPosition: {
+      LH: { left: 545, top: 102, width: 95, height: 61 },
+      CH: { left: 753, top: 115, width: 37, height: 30 },
+      RH: { left: 850, top: 102, width: 86, height: 70 },
+      LF: { left: 617, top: 448, width: 102, height: 32 },
+      CF: { left: 749, top: 489, width: 55, height: 28 },
+      RF: { left: 836, top: 446, width: 74, height: 60 }
+    }
+  },
   SS2_A084_A083x: { left: moves2, right: moves1 },
-
   IS2_A008_A030x: { left: moves2, right: moves2 },
   IS2_A029_A025x: { left: moves2, right: moves2 },
   IS2_A038_A035x: { left: moves2, right: moves2 },
