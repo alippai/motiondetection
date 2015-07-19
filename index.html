@@ -14,199 +14,40 @@
       float: left;
     }
     #panel {
-      width: 300px;
+      width: 100%;
       display: none;
       padding: 20px;
     }
-    #addWatcher {
+    .position {
+      min-width: 280px;
     }
-    #watchers {
-      display: none;
+    tbody th {
+      min-width: 100px;
     }
-    .data {
-      min-width: 170px;
+    #result {
+      width: 100%;
     }
-    #startProcess {
-      display: none;
+    .completed {
+      background-color: lightgreen;
+    }
+    .current {
+      background-color: lightyellow;
     }
   </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-  <script src="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropper/0.10.1/cropper.min.js"></script>
-  <script src="http://code.highcharts.com/highcharts.js"></script>
-  <script src="moves.js"></script>
-  <script src="files.js"></script>
-  <script>
-    var canvas = document.createElement("canvas");
-    var ctx1 = canvas.getContext('2d');
-
-    function init() {
-      "use strict";
-      const scale = 0.5;
-
-      const videoFile = document.getElementById("uploadInput").files[0];
-      const videoURL = URL.createObjectURL(videoFile);
-      const player = document.getElementById('player');
-      const watchers = [];
-      var cropperElem = null;
-
-      player.src = videoURL;
-
-      const c2 = document.getElementById('c2');
-      const ctx2 = c2.getContext('2d');
-
-      player.addEventListener('canplay', function () {
-        $('#uploadInput').hide();
-        player.currentTime = 0.5; // Triggers seek
-
-        $('#container').width(player.videoWidth * scale);
-        canvas.width = player.videoWidth * scale;
-        canvas.height = player.videoHeight * scale;
-        c2.width = player.videoWidth * scale;
-        c2.height = player.videoHeight * scale;
-      });
-
-      player.addEventListener('seeked', function () {
-        ctx2.drawImage(player, 0, 0, canvas.width, canvas.height);
-
-        cropperElem = $('#container > canvas').cropper({
-          guides: false,
-          center: false,
-          background: false,
-          movable: false,
-          rotatable: false,
-          zoomable: false,
-          mouseWheelZoom: false,
-          touchDragZoom: false,
-          doubleClickToggle: false
-        });
-
-        $('#panel, #addWatcher').show();
-      }, false);
-      $('#addWatcher').click(function (e) {
-        $('.help').hide();
-        $('#watchers, #startProcess').show();
-        const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-        cropperElem.cropper('clear');
-        createWatcher(data);
-        return false;
-      });
-
-      $('#startProcess').click(function() {
-        $('#addWatcher').hide();
-        cropperElem.cropper('destroy');
-        $('#container, #startProcess').hide();
-        $('#panel').css({ width: '100%' });
-        player.play();
-        next();
-      });
-
-      function createWatcher(data) {
-        const row = $('<tr><td class="preview"></td><td class="data"><div class="container" style="width: 1400px; height: 200px;"></div></td></tr>');
-        const newCanvas = document.createElement('canvas');
-        newCanvas.width = data.width;
-        newCanvas.height = data.height;
-        const ctx = newCanvas.getContext('2d');
-        data.context = ctx;
-        const frame = ctx2.getImageData(data.left, data.top, data.width, data.height);
-        data.reference = frame.data;
-        data.last = 0;
-        data.lastTime = 0;
-        const chart = $(row).find('.container').highcharts({
-          chart: {
-            type: 'spline',
-            animation: Highcharts.svg, // don't animate in old IE
-            marginRight: 10,
-            events: {
-              load: function () {
-                data.series = this.series[0];
-              }
-            }
-          },
-          xAxis: {
-            type: 'linear',
-            tickPixelInterval: 20,
-            min: 0,
-            max: player.duration
-          },
-          yAxis: {
-            min: 0,
-            type: 'linear',
-            plotLines: [{
-              value: 0,
-              width: 1,
-              color: '#808080'
-            }]
-          },
-          title: {
-            text: ''
-          },
-          legend: {
-            enabled: false
-          },
-          exporting: {
-            enabled: false
-          },
-          series: [{
-            name: 'Data',
-            data: [],
-            states: {
-              hover: {
-                enabled: false
-              }
-            }
-          }]
-        });
-        data.chart = chart;
-
-        ctx.putImageData(frame, 0, 0);
-        watchers.push(data);
-        row.find('.preview').append(newCanvas);
-        $('#watchers > tbody').append(row);
-      }
-
-      function next() {
-        if (player.paused || player.ended) {
-          return;
-        }
-        computeFrame();
-        window.requestAnimationFrame(next);
-      }
-
-      function computeFrame() {
-        ctx1.drawImage(player, 0, 0, canvas.width, canvas.height);
-        for (var i = 0; i < watchers.length; i++) {
-          const data = watchers[i];
-          const frame = ctx1.getImageData(data.left, data.top, data.width, data.height);
-          var diff = 0;
-          for (var j = 0; j < frame.data.length; j++) {
-            if (j % 4 !== 3) diff += Math.abs(frame.data[j] - data.reference[j]);
-          }
-          diff = diff / frame.data.length;
-          if (Math.abs(data.last - diff) > 4 || (player.currentTime - data.lasttime) > 0.1)  {
-            data.last = diff;
-            data.lasttime = player.currentTime;
-            data.series.addPoint([player.currentTime, diff], true, false);
-          }
-          watchers[i].context.putImageData(frame, 0, 0);
-        }
-        return;
-      }
-      player.addEventListener('ended', function () {
-        for (var i = 0; i < watchers.length; i++) {
-          const data = watchers[i].result.map(function (item) { return item.time + ', ' + item.value }).join(';');
-          console.log(data);
-        }
-      });
-    }
-  </script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script defer src="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/cropper/0.10.1/cropper.min.js"></script>
+  <script defer src="http://code.highcharts.com/highcharts.js"></script>
+  <script defer src="dist/moves.js"></script>
+  <script defer src="dist/files.js"></script>
+  <script defer src="dist/script.js"></script>
 </head>
 
 <body>
 <form name="uploadForm">
   <input id="uploadInput" type="file" name="myVideo" onchange="init();" />
 </form>
-<video id="player" controls muted></video>
+<video id="player" controls></video>
 <div id="container">
   <canvas id="c2"></canvas>
 </div>
@@ -214,19 +55,88 @@
   <table id="watchers" >
     <thead>
     <tr>
-      <th>Preview</th>
-      <th>Data</th>
+      <th>Name</th>
+      <th>Position</th>
+      <th>Add</th>
+    </tr>
+    </thead>
+    <tbody>
+      <tr class="left-hand">
+        <th>Left hand</th>
+        <td class="position"></td>
+        <td class="add">
+          <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+            <i class="material-icons">add</i>
+          </button>
+        </td>
+      </tr>
+      <tr class="center-hand">
+        <th>Center hand</th>
+        <td class="position"></td>
+        <td>
+          <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+            <i class="material-icons">add</i>
+          </button>
+        </td>
+      </tr>
+      <tr class="right-hand">
+        <th>Right hand</th>
+        <td class="position"></td>
+        <td>
+          <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+            <i class="material-icons">add</i>
+          </button>
+        </td>
+      </tr>
+      <tr class="left-foot">
+        <th>Left foot</th>
+        <td class="position"></td>
+        <td>
+          <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+            <i class="material-icons">add</i>
+          </button>
+        </td>
+      </tr>
+      <tr class="center-foot">
+        <th>Center foot</th>
+        <td class="position"></td>
+        <td>
+          <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+            <i class="material-icons">add</i>
+          </button>
+        </td>
+      </tr>
+      <tr class="right-foot">
+        <th>Right foot</th>
+        <td class="position"></td>
+        <td>
+          <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+            <i class="material-icons">add</i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <button id="startProcess" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect">
+    Start process
+  </button>
+  <table id="result">
+    <thead>
+    <tr>
+      <th colspan="3">Left</th>
+      <th colspan="3">Right</th>
+    </tr>
+    <tr>
+      <th>Event</th>
+      <th>Result</th>
+      <th>Event</th>
+      <th>Result</th>
     </tr>
     </thead>
     <tbody>
     </tbody>
   </table>
-  <span class="help">Select an area of interest and press: </span><button id="addWatcher" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-    <i class="material-icons">add</i>
-  </button>
-  <button id="startProcess" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect">
-    Start process
-  </button>
+
 </div>
 </body>
 </html>
