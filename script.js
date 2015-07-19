@@ -1,3 +1,5 @@
+const watchers = {};
+
 function init() {
   "use strict";
   const scale = 0.5;
@@ -5,6 +7,8 @@ function init() {
   const videoFile = document.getElementById("uploadInput").files[0];
   const leftMoves = files[videoFile.name.replace('.mp4', '')].left;
   const rightMoves = files[videoFile.name.replace('.mp4', '')].right;
+  const leftPositions = files[videoFile.name.replace('.mp4', '')].leftPosition;
+  const rightPositions = files[videoFile.name.replace('.mp4', '')].rightPosition;
   for (var i = 0; i < 240; i++) {
     $('#result tbody').append(`
       <tr id="event-${i}">
@@ -17,10 +21,9 @@ function init() {
   }
   const videoURL = URL.createObjectURL(videoFile);
   const player = document.getElementById('player');
-  const watchers = {};
   var cropperElem = null;
   const leftResults = [];
-  const leftResultsA = [];
+  const rightResults = [];
 
   player.src = videoURL;
 
@@ -40,6 +43,40 @@ function init() {
   player.addEventListener('seeked', function () {
     ctx2.drawImage(player, 0, 0, c2.width, c2.height);
 
+
+    /*addWatcher('LH', {"left":97,"top":134,"width":89,"height":34});
+    $('.left-hand .position').text(JSON.stringify({"left":97,"top":134,"width":89,"height":34}));
+    addWatcher('CH', {"left":205,"top":149,"width":79,"height":46});
+    $('.center-hand .position').text(JSON.stringify({"left":205,"top":149,"width":79,"height":46}));
+    addWatcher('RH', {"left":310,"top":137,"width":85,"height":30});
+    $('.right-hand .position').text(JSON.stringify({"left":310,"top":137,"width":85,"height":30}));
+    addWatcher('LF', {"left":169,"top":302,"width":39,"height":158});
+    $('.left-foot .position').text(JSON.stringify({"left":169,"top":302,"width":39,"height":158}));
+    addWatcher('CF', {"left":183,"top":469,"width":105,"height":30});
+    $('.center-foot .position').text(JSON.stringify({"left":183,"top":469,"width":105,"height":30}));
+    addWatcher('RF', {"left":294,"top":322,"width":50,"height":146});
+    $('.right-foot .position').text(JSON.stringify({"left":294,"top":322,"width":50,"height":146}));*/
+
+    $('.left-hand .position').text(JSON.stringify(leftPositions.LH));
+    addWatcher('LLH', leftPositions.LH);
+    $('.center-hand .position').text(JSON.stringify(leftPositions.CH));
+    addWatcher('LCH', leftPositions.CH);
+    $('.right-hand .position').text(JSON.stringify(leftPositions.RH));
+    addWatcher('LRH', leftPositions.RH);
+    $('.left-foot .position').text(JSON.stringify(leftPositions.LF));
+    addWatcher('LLF', leftPositions.LF);
+    $('.center-foot .position').text(JSON.stringify(leftPositions.CF));
+    addWatcher('LCF', leftPositions.CF);
+    $('.right-foot .position').text(JSON.stringify(leftPositions.RF));
+    addWatcher('LRF', leftPositions.RF);
+
+    addWatcher('RLH', rightPositions.LH);
+    addWatcher('RCH', rightPositions.CH);
+    addWatcher('RRH', rightPositions.RH);
+    addWatcher('RLF', rightPositions.LF);
+    addWatcher('RCF', rightPositions.CF);
+    addWatcher('RRF', rightPositions.RF);
+
     cropperElem = $('#container > canvas').cropper({
       guides: false,
       center: false,
@@ -54,19 +91,7 @@ function init() {
 
     $('#panel').show();
   }, false);
-  addWatcher('LH', {"left":97,"top":134,"width":89,"height":34});
-  $('.left-hand .position').text(JSON.stringify({"left":97,"top":134,"width":89,"height":34}));
-  addWatcher('CH', {"left":205,"top":149,"width":79,"height":46});
-  $('.center-hand .position').text(JSON.stringify({"left":205,"top":149,"width":79,"height":46}));
-  addWatcher('RH', {"left":310,"top":137,"width":85,"height":30});
-  $('.right-hand .position').text(JSON.stringify({"left":310,"top":137,"width":85,"height":30}));
-  addWatcher('LF', {"left":169,"top":302,"width":39,"height":158});
-  $('.left-foot .position').text(JSON.stringify({"left":169,"top":302,"width":39,"height":158}));
-  addWatcher('CF', {"left":183,"top":469,"width":105,"height":30});
-  $('.center-foot .position').text(JSON.stringify({"left":183,"top":469,"width":105,"height":30}));
-  addWatcher('RF', {"left":294,"top":322,"width":50,"height":146});
-  $('.right-foot .position').text(JSON.stringify({"left":294,"top":322,"width":50,"height":146}));
-
+/*
   $('.left-hand button').click(() => {
     const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
     cropperElem.cropper('clear');
@@ -109,7 +134,7 @@ function init() {
     addWatcher('RF', data);
     return false;
   });
-
+*/
   $('#startProcess').click(() => {
     cropperElem.cropper('destroy');
     $('#startProcess').hide();
@@ -117,10 +142,8 @@ function init() {
     next();
   });
 
-  function addWatcher(which, data) {
-    const newCanvas = document.createElement('canvas');
-    newCanvas.width = data.width;
-    newCanvas.height = data.height;
+  function addWatcher(which, positions) {
+    var data = JSON.parse(JSON.stringify(positions));
     const frame = ctx2.getImageData(data.left, data.top, data.width, data.height);
     data.reference = frame.data;
 
@@ -138,13 +161,14 @@ function init() {
   function computeFrame() {
     ctx2.drawImage(player, 0, 0, c2.width, c2.height);
     const currentItem = Math.floor(player.currentTime * 100 / 120);
+
     $('#result tr').removeClass('current');
     for (let i = 0; i < currentItem; i++) {
       $('#event-' + i).addClass('completed');
     }
     $('#event-' + currentItem).addClass('current');
-    const data = watchers[leftMoves[currentItem]];
 
+    const data = watchers['L' + leftMoves[currentItem]];
     const frame = ctx2.getImageData(data.left, data.top, data.width, data.height);
     var diff = 0;
     for (var j = 0; j < frame.data.length; j++) {
@@ -152,14 +176,24 @@ function init() {
     }
     diff = diff / frame.data.length;
     console.log(diff);
-    if (diff > 30 && !leftResults[currentItem]) {
+    if (diff > 3 && !leftResults[currentItem]) {
       const result = player.currentTime - currentItem * 120/100;
       leftResults[currentItem] = result;
-      leftResultsA[currentItem] = {
-        reference: data.reference,
-        result: frame.data
-      };
       $('#event-' + currentItem + ' .leftResult').text(result.toFixed(5))
+    }
+
+    const data2 = watchers['R' + rightMoves[currentItem]];
+    const frame2 = ctx2.getImageData(data2.left, data2.top, data2.width, data2.height);
+    var diff2 = 0;
+    for (var j = 0; j < frame2.data.length; j++) {
+      if (j % 4 !== 3) diff2 += Math.abs(frame2.data[j] - data2.reference[j]);
+    }
+    diff2 = diff2 / frame2.data.length;
+    console.log(diff2);
+    if (diff2 > 3 && !rightResults[currentItem]) {
+      const result2 = player.currentTime - currentItem * 120/100;
+      rightResults[currentItem] = result2;
+      $('#event-' + currentItem + ' .rightResult').text(result2.toFixed(5))
     }
   }
   player.addEventListener('ended', function () {
