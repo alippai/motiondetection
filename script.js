@@ -77,52 +77,94 @@ function init() {
     $('#panel').show();
   }, false);
 
-  $('.left-hand button').click(() => {
+  $('.left-hand.left button').click(() => {
     const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
     cropperElem.cropper('clear');
     $('.left-hand .position').text(JSON.stringify(data));
-    addWatcher('LH', data);
+    addWatcher('LLH', data);
     return false;
   });
-  $('.center-hand button').click(() => {
+  $('.center-hand.left button').click(() => {
     const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
     cropperElem.cropper('clear');
     $('.center-hand .position').text(JSON.stringify(data));
-    addWatcher('CH', data);
+    addWatcher('LCH', data);
     return false;
   });
-  $('.right-hand button').click(() => {
+  $('.right-hand.left button').click(() => {
     const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
     cropperElem.cropper('clear');
     $('.right-hand .position').text(JSON.stringify(data));
-    addWatcher('RH', data);
+    addWatcher('LRH', data);
     return false;
   });
-  $('.left-foot button').click(() => {
+  $('.left-foot.left button').click(() => {
     const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
     cropperElem.cropper('clear');
     $('.left-foot .position').text(JSON.stringify(data));
-    addWatcher('LF', data);
+    addWatcher('LLF', data);
     return false;
   });
-  $('.center-foot button').click(() => {
+  $('.center-foot.left button').click(() => {
     const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
     cropperElem.cropper('clear');
     $('.center-foot .position').text(JSON.stringify(data));
-    addWatcher('CF', data);
+    addWatcher('LCF', data);
     return false;
   });
-  $('.right-foot button').click(() => {
+  $('.right-foot.left button').click(() => {
     const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
     cropperElem.cropper('clear');
     $('.right-foot .position').text(JSON.stringify(data));
-    addWatcher('RF', data);
+    addWatcher('LRF', data);
+    return false;
+  });
+  $('.left-hand.right button').click(() => {
+    const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper('clear');
+    $('.left-hand .position').text(JSON.stringify(data));
+    addWatcher('RLH', data);
+    return false;
+  });
+  $('.center-hand.right button').click(() => {
+    const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper('clear');
+    $('.center-hand .position').text(JSON.stringify(data));
+    addWatcher('RCH', data);
+    return false;
+  });
+  $('.right-hand.right button').click(() => {
+    const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper('clear');
+    $('.right-hand .position').text(JSON.stringify(data));
+    addWatcher('RRH', data);
+    return false;
+  });
+  $('.left-foot.right button').click(() => {
+    const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper('clear');
+    $('.left-foot .position').text(JSON.stringify(data));
+    addWatcher('RLF', data);
+    return false;
+  });
+  $('.center-foot.right button').click(() => {
+    const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper('clear');
+    $('.center-foot .position').text(JSON.stringify(data));
+    addWatcher('RCF', data);
+    return false;
+  });
+  $('.right-foot.right button').click(() => {
+    const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper('clear');
+    $('.right-foot .position').text(JSON.stringify(data));
+    addWatcher('RRF', data);
     return false;
   });
 
   $('#startProcess').click(() => {
     cropperElem.cropper('destroy');
-    $('#startProcess').hide();
+    $('#startProcess, #watchers').hide();
     player.play();
     next();
   });
