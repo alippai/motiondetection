@@ -1,7 +1,6 @@
 const watchers = {};
 
 function init() {
-  "use strict";
   const scale = 0.5;
 
   const videoFile = document.getElementById("uploadInput").files[0];
