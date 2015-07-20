@@ -159,6 +159,19 @@ function init() {
 
   $('#startProcess').click(function () {
     cropperElem.cropper('destroy');
+    $('#LLHMask').attr('x', watchers.LLH.left).attr('y', watchers.LLH.top).attr('width', watchers.LLH.width).attr('height', watchers.LLH.height);
+    $('#LCHMask').attr('x', watchers.LCH.left).attr('y', watchers.LCH.top).attr('width', watchers.LCH.width).attr('height', watchers.LCH.height);
+    $('#LRHMask').attr('x', watchers.LRH.left).attr('y', watchers.LRH.top).attr('width', watchers.LRH.width).attr('height', watchers.LRH.height);
+    $('#LLFMask').attr('x', watchers.LLF.left).attr('y', watchers.LLF.top).attr('width', watchers.LLF.width).attr('height', watchers.LLF.height);
+    $('#LCFMask').attr('x', watchers.LCF.left).attr('y', watchers.LCF.top).attr('width', watchers.LCF.width).attr('height', watchers.LCF.height);
+    $('#LRFMask').attr('x', watchers.LRF.left).attr('y', watchers.LRF.top).attr('width', watchers.LRF.width).attr('height', watchers.LRF.height);
+    $('#RLHMask').attr('x', watchers.RLH.left).attr('y', watchers.RLH.top).attr('width', watchers.RLH.width).attr('height', watchers.RLH.height);
+    $('#RCHMask').attr('x', watchers.RCH.left).attr('y', watchers.RCH.top).attr('width', watchers.RCH.width).attr('height', watchers.RCH.height);
+    $('#RRHMask').attr('x', watchers.RRH.left).attr('y', watchers.RRH.top).attr('width', watchers.RRH.width).attr('height', watchers.RRH.height);
+    $('#RLFMask').attr('x', watchers.RLF.left).attr('y', watchers.RLF.top).attr('width', watchers.RLF.width).attr('height', watchers.RLF.height);
+    $('#RCFMask').attr('x', watchers.RCF.left).attr('y', watchers.RCF.top).attr('width', watchers.RCF.width).attr('height', watchers.RCF.height);
+    $('#RRFMask').attr('x', watchers.RRF.left).attr('y', watchers.RRF.top).attr('width', watchers.RRF.width).attr('height', watchers.RRF.height);
+    $('#mask').show();
     $('#startProcess, #watchers').hide();
     player.play();
     next();

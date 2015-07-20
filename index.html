@@ -33,6 +33,14 @@
     .current {
       background-color: lightyellow;
     }
+    #mask {
+      display: none;
+      position: absolute;
+      width: 960px;
+      height: 540px;
+      top: 0;
+      left: 0;
+    }
   </style>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   <script defer src="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.min.js"></script>
@@ -51,6 +59,26 @@
 <div id="container">
   <canvas id="c2"></canvas>
 </div>
+<svg id="mask" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <mask id="watcherMasks">
+      <rect x="0" y="0" width="960" height="540" fill="white" />
+      <rect id="LLHMask" x="10" y="10" width="200" height="200" fill="black" />
+      <rect id="LCHMask" x="100" y="100" width="200" height="200" fill="black" />
+      <rect id="LRHMask" x="100" y="100" width="200" height="200" fill="black" />
+      <rect id="LLFMask" x="10" y="10" width="200" height="200" fill="black" />
+      <rect id="LCFMask" x="100" y="100" width="200" height="200" fill="black" />
+      <rect id="LRFMask" x="10" y="10" width="200" height="200" fill="black" />
+      <rect id="RLHMask" x="10" y="10" width="200" height="200" fill="black" />
+      <rect id="RCHMask" x="100" y="100" width="200" height="200" fill="black" />
+      <rect id="RRHMask" x="100" y="100" width="200" height="200" fill="black" />
+      <rect id="RLFMask" x="10" y="10" width="200" height="200" fill="black" />
+      <rect id="RCFMask" x="100" y="100" width="200" height="200" fill="black" />
+      <rect id="RRFMask" x="10" y="10" width="200" height="200" fill="black" />
+    </mask>
+  </defs>
+  <rect x="0" y="0" width="960" height="540" fill="rgba(0,0,0,0.6)" mask="url(#watcherMasks)" />
+</svg>
 <div id="panel">
   <table id="watchers" >
     <thead>
