@@ -56,109 +56,109 @@ function init() {
     addWatcher('RLF', rightPositions.LF);
     addWatcher('RCF', rightPositions.CF);
     addWatcher('RRF', rightPositions.RF);
-    /*
-        cropperElem = $('#container > canvas').cropper({
-          guides: false,
-          center: false,
-          background: false,
-          movable: false,
-          rotatable: false,
-          zoomable: false,
-          mouseWheelZoom: false,
-          touchDragZoom: false,
-          doubleClickToggle: false
-        });
-    */
+
+    cropperElem = $('#container > canvas').cropper({
+      guides: false,
+      center: false,
+      background: false,
+      movable: false,
+      rotatable: false,
+      zoomable: false,
+      mouseWheelZoom: false,
+      touchDragZoom: false,
+      doubleClickToggle: false
+    });
+
     $('#panel').show();
   }, false);
-  /*
-    $('.left-hand.left button').click(() => {
-      const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-      cropperElem.cropper('clear');
-      $('.left-hand.left .position').text(JSON.stringify(data));
-      addWatcher('LLH', data);
-      return false;
-    });
-    $('.center-hand.left button').click(() => {
-      const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-      cropperElem.cropper('clear');
-      $('.center-hand.left .position').text(JSON.stringify(data));
-      addWatcher('LCH', data);
-      return false;
-    });
-    $('.right-hand.left button').click(() => {
-      const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-      cropperElem.cropper('clear');
-      $('.right-hand.left .position').text(JSON.stringify(data));
-      addWatcher('LRH', data);
-      return false;
-    });
-    $('.left-foot.left button').click(() => {
-      const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-      cropperElem.cropper('clear');
-      $('.left-foot.left .position').text(JSON.stringify(data));
-      addWatcher('LLF', data);
-      return false;
-    });
-    $('.center-foot.left button').click(() => {
-      const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-      cropperElem.cropper('clear');
-      $('.center-foot.left .position').text(JSON.stringify(data));
-      addWatcher('LCF', data);
-      return false;
-    });
-    $('.right-foot.left button').click(() => {
-      const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-      cropperElem.cropper('clear');
-      $('.right-foot.left .position').text(JSON.stringify(data));
-      addWatcher('LRF', data);
-      return false;
-    });
-    $('.left-hand.right button').click(() => {
-      const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-      cropperElem.cropper('clear');
-      $('.left-hand.right .position').text(JSON.stringify(data));
-      addWatcher('RLH', data);
-      return false;
-    });
-    $('.center-hand.right button').click(() => {
-      const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-      cropperElem.cropper('clear');
-      $('.center-hand.right .position').text(JSON.stringify(data));
-      addWatcher('RCH', data);
-      return false;
-    });
-    $('.right-hand.right button').click(() => {
-      const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-      cropperElem.cropper('clear');
-      $('.right-hand.right .position').text(JSON.stringify(data));
-      addWatcher('RRH', data);
-      return false;
-    });
-    $('.left-foot.right button').click(() => {
-      const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-      cropperElem.cropper('clear');
-      $('.left-foot.right .position').text(JSON.stringify(data));
-      addWatcher('RLF', data);
-      return false;
-    });
-    $('.center-foot.right button').click(() => {
-      const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-      cropperElem.cropper('clear');
-      $('.center-foot.right .position').text(JSON.stringify(data));
-      addWatcher('RCF', data);
-      return false;
-    });
-    $('.right-foot.right button').click(() => {
-      const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
-      cropperElem.cropper('clear');
-      $('.right-foot.right .position').text(JSON.stringify(data));
-      addWatcher('RRF', data);
-      return false;
-    });
-  */
+
+  $('.left-hand.left button').click(function () {
+    var data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper('clear');
+    $('.left-hand.left .position').text(JSON.stringify(data));
+    addWatcher('LLH', data);
+    return false;
+  });
+  $('.center-hand.left button').click(function () {
+    var data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper('clear');
+    $('.center-hand.left .position').text(JSON.stringify(data));
+    addWatcher('LCH', data);
+    return false;
+  });
+  $('.right-hand.left button').click(function () {
+    var data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper('clear');
+    $('.right-hand.left .position').text(JSON.stringify(data));
+    addWatcher('LRH', data);
+    return false;
+  });
+  $('.left-foot.left button').click(function () {
+    var data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper('clear');
+    $('.left-foot.left .position').text(JSON.stringify(data));
+    addWatcher('LLF', data);
+    return false;
+  });
+  $('.center-foot.left button').click(function () {
+    var data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper('clear');
+    $('.center-foot.left .position').text(JSON.stringify(data));
+    addWatcher('LCF', data);
+    return false;
+  });
+  $('.right-foot.left button').click(function () {
+    var data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper('clear');
+    $('.right-foot.left .position').text(JSON.stringify(data));
+    addWatcher('LRF', data);
+    return false;
+  });
+  $('.left-hand.right button').click(function () {
+    var data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper('clear');
+    $('.left-hand.right .position').text(JSON.stringify(data));
+    addWatcher('RLH', data);
+    return false;
+  });
+  $('.center-hand.right button').click(function () {
+    var data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper('clear');
+    $('.center-hand.right .position').text(JSON.stringify(data));
+    addWatcher('RCH', data);
+    return false;
+  });
+  $('.right-hand.right button').click(function () {
+    var data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper('clear');
+    $('.right-hand.right .position').text(JSON.stringify(data));
+    addWatcher('RRH', data);
+    return false;
+  });
+  $('.left-foot.right button').click(function () {
+    var data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper('clear');
+    $('.left-foot.right .position').text(JSON.stringify(data));
+    addWatcher('RLF', data);
+    return false;
+  });
+  $('.center-foot.right button').click(function () {
+    var data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper('clear');
+    $('.center-foot.right .position').text(JSON.stringify(data));
+    addWatcher('RCF', data);
+    return false;
+  });
+  $('.right-foot.right button').click(function () {
+    var data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
+    cropperElem.cropper('clear');
+    $('.right-foot.right .position').text(JSON.stringify(data));
+    addWatcher('RRF', data);
+    return false;
+  });
+
   $('#startProcess').click(function () {
-    //cropperElem.cropper('destroy');
+    cropperElem.cropper('destroy');
     $('#LLHMask').attr('x', watchers.LLH.left).attr('y', watchers.LLH.top).attr('width', watchers.LLH.width).attr('height', watchers.LLH.height);
     $('#LCHMask').attr('x', watchers.LCH.left).attr('y', watchers.LCH.top).attr('width', watchers.LCH.width).attr('height', watchers.LCH.height);
     $('#LRHMask').attr('x', watchers.LRH.left).attr('y', watchers.LRH.top).attr('width', watchers.LRH.width).attr('height', watchers.LRH.height);
