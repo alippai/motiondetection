@@ -548,7 +548,7 @@ window.files = {
     rightPosition: {
       LH: { left: 545, top: 102, width: 95, height: 61 },
       CH: { left: 753, top: 115, width: 37, height: 30 },
-      RH: { left: 850, top: 102, width: 86, height: 70 },
+      RH: { left: 932, top: 81, width: 28, height: 280 },
       LF: { left: 617, top: 448, width: 102, height: 32 },
       CF: { left: 749, top: 489, width: 55, height: 28 },
       RF: { left: 836, top: 446, width: 74, height: 60 }
