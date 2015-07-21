@@ -61,7 +61,7 @@ function init() {
     addWatcher('RLF', rightPositions.LF);
     addWatcher('RCF', rightPositions.CF);
     addWatcher('RRF', rightPositions.RF);
-
+/*
     cropperElem = $('#container > canvas').cropper({
       guides: false,
       center: false,
@@ -73,10 +73,10 @@ function init() {
       touchDragZoom: false,
       doubleClickToggle: false
     });
-
+*/
     $('#panel').show();
   }, false);
-
+/*
   $('.left-hand.left button').click(() => {
     const data = cropperElem.cropper('getCropBoxData'); // {left: 96, top: 54, width: 768, height: 432}
     cropperElem.cropper('clear');
@@ -161,9 +161,9 @@ function init() {
     addWatcher('RRF', data);
     return false;
   });
-
+*/
   $('#startProcess').click(() => {
-    cropperElem.cropper('destroy');
+    //cropperElem.cropper('destroy');
     $('#LLHMask').attr('x', watchers.LLH.left).attr('y', watchers.LLH.top).attr('width', watchers.LLH.width).attr('height', watchers.LLH.height);
     $('#LCHMask').attr('x', watchers.LCH.left).attr('y', watchers.LCH.top).attr('width', watchers.LCH.width).attr('height', watchers.LCH.height);
     $('#LRHMask').attr('x', watchers.LRH.left).attr('y', watchers.LRH.top).attr('width', watchers.LRH.width).attr('height', watchers.LRH.height);
