@@ -53,152 +53,17 @@
 
 <body>
 <form name="uploadForm">
-  <input id="uploadInput" type="file" name="myVideo" onchange="init();" />
+  <input id="uploadInput" type="file" name="myVideo" onchange="init();" accept="video/mp4" />
 </form>
 <video id="player" controls></video>
-<div id="container">
-  <canvas id="c2"></canvas>
-</div>
+<canvas id="c2"></canvas>
 <svg id="mask" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <defs>
-    <mask id="watcherMasks">
-      <rect x="0" y="0" width="960" height="540" fill="white" />
-      <rect id="LLHMask" x="10" y="10" width="200" height="200" fill="black" />
-      <rect id="LCHMask" x="100" y="100" width="200" height="200" fill="black" />
-      <rect id="LRHMask" x="100" y="100" width="200" height="200" fill="black" />
-      <rect id="LLFMask" x="10" y="10" width="200" height="200" fill="black" />
-      <rect id="LCFMask" x="100" y="100" width="200" height="200" fill="black" />
-      <rect id="LRFMask" x="10" y="10" width="200" height="200" fill="black" />
-      <rect id="RLHMask" x="10" y="10" width="200" height="200" fill="black" />
-      <rect id="RCHMask" x="100" y="100" width="200" height="200" fill="black" />
-      <rect id="RRHMask" x="100" y="100" width="200" height="200" fill="black" />
-      <rect id="RLFMask" x="10" y="10" width="200" height="200" fill="black" />
-      <rect id="RCFMask" x="100" y="100" width="200" height="200" fill="black" />
-      <rect id="RRFMask" x="10" y="10" width="200" height="200" fill="black" />
-    </mask>
-  </defs>
-  <rect x="0" y="0" width="960" height="540" fill="rgba(0,0,0,0.6)" mask="url(#watcherMasks)" />
+  <circle id="TL" cx="60" cy="60" r="4" fill="yellow" />
+  <circle id="TR" cx="60" cy="60" r="4" fill="red" />
+  <circle id="BL" cx="60" cy="60" r="4" fill="green" />
+  <circle id="BR" cx="60" cy="60" r="4" fill="blue" />
 </svg>
 <div id="panel">
-  <table id="watchers" >
-    <thead>
-    <tr>
-      <th>Name</th>
-      <th>Position</th>
-      <th>Add</th>
-    </tr>
-    </thead>
-    <tbody>
-      <tr class="left-hand left">
-        <th>Left: Left hand</th>
-        <td class="position"></td>
-        <td class="add">
-          <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-            <i class="material-icons">add</i>
-          </button>
-        </td>
-      </tr>
-      <tr class="center-hand left">
-        <th>Left: Center hand</th>
-        <td class="position"></td>
-        <td>
-          <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-            <i class="material-icons">add</i>
-          </button>
-        </td>
-      </tr>
-      <tr class="right-hand left">
-        <th>Left: Right hand</th>
-        <td class="position"></td>
-        <td>
-          <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-            <i class="material-icons">add</i>
-          </button>
-        </td>
-      </tr>
-      <tr class="left-foot left">
-        <th>Left: Left foot</th>
-        <td class="position"></td>
-        <td>
-          <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-            <i class="material-icons">add</i>
-          </button>
-        </td>
-      </tr>
-      <tr class="center-foot left">
-        <th>Left: Center foot</th>
-        <td class="position"></td>
-        <td>
-          <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-            <i class="material-icons">add</i>
-          </button>
-        </td>
-      </tr>
-      <tr class="right-foot left">
-        <th>Left: Right foot</th>
-        <td class="position"></td>
-        <td>
-          <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-            <i class="material-icons">add</i>
-          </button>
-        </td>
-      </tr>
-      <tr class="left-hand right">
-        <th>Right: Left hand</th>
-        <td class="position"></td>
-        <td class="add">
-          <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-            <i class="material-icons">add</i>
-          </button>
-        </td>
-      </tr>
-      <tr class="center-hand right">
-        <th>Right: Center hand</th>
-        <td class="position"></td>
-        <td>
-          <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-            <i class="material-icons">add</i>
-          </button>
-        </td>
-      </tr>
-      <tr class="right-hand right">
-        <th>Right: Right hand</th>
-        <td class="position"></td>
-        <td>
-          <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-            <i class="material-icons">add</i>
-          </button>
-        </td>
-      </tr>
-      <tr class="left-foot right">
-        <th>Right: Left foot</th>
-        <td class="position"></td>
-        <td>
-          <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-            <i class="material-icons">add</i>
-          </button>
-        </td>
-      </tr>
-      <tr class="center-foot right">
-        <th>Right: Center foot</th>
-        <td class="position"></td>
-        <td>
-          <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-            <i class="material-icons">add</i>
-          </button>
-        </td>
-      </tr>
-      <tr class="right-foot right">
-        <th>Right: Right foot</th>
-        <td class="position"></td>
-        <td>
-          <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-            <i class="material-icons">add</i>
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
   <button id="startProcess" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect">
     Start process
   </button>

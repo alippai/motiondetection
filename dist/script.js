@@ -1,6 +1,8 @@
 'use strict';
 
 var watchers = {};
+var c1 = document.createElement('canvas');
+var ctx1 = c1.getContext('2d');
 
 function init() {
   var scale = 0.5;
@@ -15,20 +17,23 @@ function init() {
   }
   var videoURL = URL.createObjectURL(videoFile);
   var player = document.getElementById('player');
-  var leftResults = [];
-  var rightResults = [];
 
   player.src = videoURL;
 
   var c2 = document.getElementById('c2');
   var ctx2 = c2.getContext('2d');
 
+  var $TL = $('#TL');
+  var $BL = $('#BL');
+  var $BR = $('#BR');
+  var $TR = $('#TR');
+
   player.addEventListener('canplay', function () {
     $('#uploadInput').hide();
     player.currentTime = 0.5; // Triggers seek
 
-    $('#container').width(player.videoWidth * scale);
-
+    c1.width = player.videoWidth * scale;
+    c1.height = player.videoHeight * scale;
     c2.width = player.videoWidth * scale;
     c2.height = player.videoHeight * scale;
   });
@@ -36,55 +41,15 @@ function init() {
   player.addEventListener('seeked', function () {
     ctx2.drawImage(player, 0, 0, c2.width, c2.height);
 
-    $('.left-hand .position').text(JSON.stringify(leftPositions.LH));
-    addWatcher('LLH', leftPositions.LH);
-    $('.center-hand .position').text(JSON.stringify(leftPositions.CH));
-    addWatcher('LCH', leftPositions.CH);
-    $('.right-hand .position').text(JSON.stringify(leftPositions.RH));
-    addWatcher('LRH', leftPositions.RH);
-    $('.left-foot .position').text(JSON.stringify(leftPositions.LF));
-    addWatcher('LLF', leftPositions.LF);
-    $('.center-foot .position').text(JSON.stringify(leftPositions.CF));
-    addWatcher('LCF', leftPositions.CF);
-    $('.right-foot .position').text(JSON.stringify(leftPositions.RF));
-    addWatcher('LRF', leftPositions.RF);
-
-    addWatcher('RLH', rightPositions.LH);
-    addWatcher('RCH', rightPositions.CH);
-    addWatcher('RRH', rightPositions.RH);
-    addWatcher('RLF', rightPositions.LF);
-    addWatcher('RCF', rightPositions.CF);
-    addWatcher('RRF', rightPositions.RF);
-
     $('#panel').show();
   }, false);
 
   $('#startProcess').click(function () {
-    $('#LLHMask').attr('x', watchers.LLH.left).attr('y', watchers.LLH.top).attr('width', watchers.LLH.width).attr('height', watchers.LLH.height);
-    $('#LCHMask').attr('x', watchers.LCH.left).attr('y', watchers.LCH.top).attr('width', watchers.LCH.width).attr('height', watchers.LCH.height);
-    $('#LRHMask').attr('x', watchers.LRH.left).attr('y', watchers.LRH.top).attr('width', watchers.LRH.width).attr('height', watchers.LRH.height);
-    $('#LLFMask').attr('x', watchers.LLF.left).attr('y', watchers.LLF.top).attr('width', watchers.LLF.width).attr('height', watchers.LLF.height);
-    $('#LCFMask').attr('x', watchers.LCF.left).attr('y', watchers.LCF.top).attr('width', watchers.LCF.width).attr('height', watchers.LCF.height);
-    $('#LRFMask').attr('x', watchers.LRF.left).attr('y', watchers.LRF.top).attr('width', watchers.LRF.width).attr('height', watchers.LRF.height);
-    $('#RLHMask').attr('x', watchers.RLH.left).attr('y', watchers.RLH.top).attr('width', watchers.RLH.width).attr('height', watchers.RLH.height);
-    $('#RCHMask').attr('x', watchers.RCH.left).attr('y', watchers.RCH.top).attr('width', watchers.RCH.width).attr('height', watchers.RCH.height);
-    $('#RRHMask').attr('x', watchers.RRH.left).attr('y', watchers.RRH.top).attr('width', watchers.RRH.width).attr('height', watchers.RRH.height);
-    $('#RLFMask').attr('x', watchers.RLF.left).attr('y', watchers.RLF.top).attr('width', watchers.RLF.width).attr('height', watchers.RLF.height);
-    $('#RCFMask').attr('x', watchers.RCF.left).attr('y', watchers.RCF.top).attr('width', watchers.RCF.width).attr('height', watchers.RCF.height);
-    $('#RRFMask').attr('x', watchers.RRF.left).attr('y', watchers.RRF.top).attr('width', watchers.RRF.width).attr('height', watchers.RRF.height);
+    $('#startProcess').hide();
     $('#mask').show();
-    $('#startProcess, #watchers').hide();
     player.play();
     next();
   });
-
-  function addWatcher(which, positions) {
-    var data = JSON.parse(JSON.stringify(positions));
-    var frame = ctx2.getImageData(data.left, data.top, data.width, data.height);
-    data.reference = frame.data;
-
-    watchers[which] = data;
-  }
 
   function next() {
     if (player.paused || player.ended) {
@@ -95,41 +60,63 @@ function init() {
   }
 
   function computeFrame() {
-    ctx2.drawImage(player, 0, 0, c2.width, c2.height);
+    ctx1.drawImage(player, 0, 0, c2.width, c2.height);
     var currentItem = Math.floor((player.currentTime - 100 / 120) * 100 / 120);
     if (currentItem >= 0) {
+      var frame = ctx1.getImageData(0, 0, c2.width, c2.height);
+      var TLM00 = 0;
+      var TLM10 = 0;
+      var TLM01 = 0;
 
-      $('#result tr').removeClass('current');
-      for (var _i = 0; _i < currentItem; _i++) {
-        $('#event-' + _i).addClass('completed');
-      }
-      $('#event-' + currentItem).addClass('current');
+      var TRM00 = 0;
+      var TRM10 = 0;
+      var TRM01 = 0;
 
-      var data = watchers['L' + leftMoves[currentItem]];
-      var frame = ctx2.getImageData(data.left, data.top, data.width, data.height);
-      var diff = 0;
-      for (var j = 0; j < frame.data.length; j++) {
-        if (j % 4 !== 3) diff += Math.abs(frame.data[j] - data.reference[j]);
-      }
-      diff = diff / frame.data.length;
-      if (diff > 10 && !leftResults[currentItem]) {
-        var result = player.currentTime - 100 / 120 - currentItem * 120 / 100;
-        leftResults[currentItem] = result;
-        $('#event-' + currentItem + ' .leftResult').text(result.toFixed(5));
-      }
+      var BLM00 = 0;
+      var BLM10 = 0;
+      var BLM01 = 0;
 
-      var data2 = watchers['R' + rightMoves[currentItem]];
-      var frame2 = ctx2.getImageData(data2.left, data2.top, data2.width, data2.height);
-      var diff2 = 0;
-      for (var j = 0; j < frame2.data.length; j++) {
-        if (j % 4 !== 3) diff2 += Math.abs(frame2.data[j] - data2.reference[j]);
+      var BRM00 = 0;
+      var BRM10 = 0;
+      var BRM01 = 0;
+      for (var i = 0; i < frame.data.length / 4; i++) {
+        var r = frame.data[i * 4];
+        var g = frame.data[i * 4 + 1];
+        var b = frame.data[i * 4 + 2];
+        var intensity = 0.2989 * r + 0.5870 * g + 0.1140 * b;
+        var x = i % c2.width;
+        var y = Math.floor(i / c2.width);
+
+        if (x < c2.width / 2 && y < c2.height / 2) {
+          TLM00 += intensity;
+          TLM10 += x * intensity;
+          TLM01 += y * intensity;
+        }
+        if (x > c2.width / 2 && y < c2.height / 2) {
+          TRM00 += intensity;
+          TRM10 += x * intensity;
+          TRM01 += y * intensity;
+        }
+        if (x > c2.width / 2 && y > c2.height / 2) {
+          BRM00 += intensity;
+          BRM10 += x * intensity;
+          BRM01 += y * intensity;
+        }
+        if (x < c2.width / 2 && y > c2.height / 2) {
+          BLM00 += intensity;
+          BLM10 += x * intensity;
+          BLM01 += y * intensity;
+        }
+        frame[i * 4] = intensity;
+        frame[i * 4 + 1] = intensity;
+        frame[i * 4 + 2] = intensity;
+        frame[i * 4 + 3] = 255;
       }
-      diff2 = diff2 / frame2.data.length;
-      if (diff2 > 10 && !rightResults[currentItem]) {
-        var result2 = player.currentTime - 100 / 120 - currentItem * 120 / 100;
-        rightResults[currentItem] = result2;
-        $('#event-' + currentItem + ' .rightResult').text(result2.toFixed(5));
-      }
+      ctx2.putImageData(frame, 0, 0, 0, 0, c2.width, c2.height);
+      $TL.attr('cx', TLM10 / TLM00).attr('cy', TLM01 / TLM00);
+      $BL.attr('cx', BLM10 / BLM00).attr('cy', BLM01 / BLM00);
+      $BR.attr('cx', BRM10 / BRM00).attr('cy', BRM01 / BRM00);
+      $TR.attr('cx', TRM10 / TRM00).attr('cy', TRM01 / TRM00);
     }
   }
   player.addEventListener('ended', function () {
