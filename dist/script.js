@@ -44,12 +44,82 @@ function init() {
   player.addEventListener('seeked', function () {
     ctx2.drawImage(player, 0, 0, c2.width, c2.height);
 
-    $('#panel').show();
+    var frame = ctx2.getImageData(0, 0, c2.width, c2.height);
+    var l = frame.data.length / 4;
+
+    TLM00 = 0;
+    TLM10 = 0;
+    TLM01 = 0;
+
+    TRM00 = 0;
+    TRM10 = 0;
+    TRM01 = 0;
+
+    BLM00 = 0;
+    BLM10 = 0;
+    BLM01 = 0;
+
+    BRM00 = 0;
+    BRM10 = 0;
+    BRM01 = 0;
+
+    for (var i = 0; i < l; i++) {
+      r = frame.data[i * 4];
+      g = frame.data[i * 4 + 1];
+      b = frame.data[i * 4 + 2];
+      intensity = 0.2989 * r + 0.5870 * g + 0.1140 * b | 0;
+
+      x = i % width;
+      y = i / width | 0;
+
+      if (x < width * 0.5 && y < height * 0.4) {
+        r = 1;g = 0;b = 0;
+        TLM00 += intensity;
+        TLM10 += x * intensity;
+        TLM01 += y * intensity;
+      }
+      if (x > width * 0.5 && y < height * 0.4) {
+        r = 1;g = 1;b = 0;
+        TRM00 += intensity;
+        TRM10 += x * intensity;
+        TRM01 += y * intensity;
+      }
+      if (x > width * 0.5 && y > height * 0.7) {
+        r = 1;g = 0;b = 1;
+        BRM00 += intensity;
+        BRM10 += x * intensity;
+        BRM01 += y * intensity;
+      }
+      if (x < width * 0.5 && y > height * 0.7) {
+        r = 1;g = 1;b = 1;
+        BLM00 += intensity;
+        BLM10 += x * intensity;
+        BLM01 += y * intensity;
+      }
+    }
+
+    TL_x = TLM10 / TLM00;
+    TL_y = TLM01 / TLM00;
+
+    BL_x = BLM10 / BLM00;
+    BL_y = BLM01 / BLM00;
+
+    BR_x = BRM10 / BRM00;
+    BR_y = BRM01 / BRM00;
+
+    TR_x = TRM10 / TRM00;
+    TR_y = TRM01 / TRM00;
+
+    $TL.attr('cx', TL_x).attr('cy', TL_y);
+    $BL.attr('cx', BL_x).attr('cy', BL_y);
+    $BR.attr('cx', BR_x).attr('cy', BR_y);
+    $TR.attr('cx', TR_x).attr('cy', TR_y);
+
+    $('#panel, #mask').show();
   }, false);
 
   $('#startProcess').click(function () {
     $('#startProcess').hide();
-    $('#mask').show();
     player.play();
     next();
   });
