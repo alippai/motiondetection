@@ -12,6 +12,9 @@ var $BL = $('#BL');
 var $BR = $('#BR');
 var $TR = $('#TR');
 
+var width = 0;
+var height = 0;
+
 function init() {
   var scale = 0.5;
 
@@ -34,6 +37,8 @@ function init() {
     c1.height = player.videoHeight * scale | 0;
     c2.width = player.videoWidth * scale | 0;
     c2.height = player.videoHeight * scale | 0;
+    width = c2.width | 0;
+    height = c2.height | 0;
   });
 
   player.addEventListener('seeked', function () {
@@ -80,12 +85,21 @@ var BRM00 = 0;
 var BRM10 = 0;
 var BRM01 = 0;
 
+var TL_x = 0;
+var TL_y = 0;
+var TR_x = 0;
+var TR_y = 0;
+var BL_x = 0;
+var BL_y = 0;
+var BR_x = 0;
+var BR_y = 0;
+
+var W = 0.1;
+
 function computeFrame() {
   ctx1.drawImage(player, 0, 0, c2.width, c2.height);
   var frame = ctx1.getImageData(0, 0, c2.width, c2.height);
   var l = frame.data.length / 4;
-  var width = c2.width | 0;
-  var height = c2.height | 0;
 
   TLM00 = 0;
   TLM10 = 0;
@@ -113,36 +127,53 @@ function computeFrame() {
     y = i / width | 0;
 
     if (x < width / 2 && y < height / 2) {
+      r = 1;g = 0;b = 0;
       TLM00 += intensity;
       TLM10 += x * intensity;
       TLM01 += y * intensity;
     }
     if (x > width / 2 && y < height / 2) {
+      r = 1;g = 1;b = 0;
       TRM00 += intensity;
       TRM10 += x * intensity;
       TRM01 += y * intensity;
     }
     if (x > width / 2 && y > height / 2) {
+      r = 1;g = 0;b = 1;
       BRM00 += intensity;
       BRM10 += x * intensity;
       BRM01 += y * intensity;
     }
     if (x < width / 2 && y > height / 2) {
+      r = 1;g = 1;b = 1;
       BLM00 += intensity;
       BLM10 += x * intensity;
       BLM01 += y * intensity;
     }
 
-    frame.data[i * 4] = intensity;
-    frame.data[i * 4 + 1] = intensity;
-    frame.data[i * 4 + 2] = intensity;
+    frame.data[i * 4] = intensity * r;
+    frame.data[i * 4 + 1] = intensity * g;
+    frame.data[i * 4 + 2] = intensity * b;
     frame.data[i * 4 + 3] = 255;
   }
   ctx2.putImageData(frame, 0, 0);
-  $TL.attr('cx', TLM10 / TLM00).attr('cy', TLM01 / TLM00);
-  $BL.attr('cx', BLM10 / BLM00).attr('cy', BLM01 / BLM00);
-  $BR.attr('cx', BRM10 / BRM00).attr('cy', BRM01 / BRM00);
-  $TR.attr('cx', TRM10 / TRM00).attr('cy', TRM01 / TRM00);
+
+  TL_x += (TLM10 / TLM00 - TL_x) * W;
+  TL_y += (TLM01 / TLM00 - TL_y) * W;
+
+  BL_x += (BLM10 / BLM00 - BL_x) * W;
+  BL_y += (BLM01 / BLM00 - BL_y) * W;
+
+  BR_x += (BRM10 / BRM00 - BR_x) * W;
+  BR_y += (BRM01 / BRM00 - BR_y) * W;
+
+  TR_x += (TRM10 / TRM00 - TR_x) * W;
+  TR_y += (TRM01 / TRM00 - TR_y) * W;
+
+  $TL.attr('cx', TL_x + (TLM10 / TLM00 - TL_x) * 50).attr('cy', TL_y + (TLM01 / TLM00 - TL_y) * 50);
+  $BL.attr('cx', BL_x + (BLM10 / BLM00 - BL_x) * 50).attr('cy', BL_y + (BLM01 / BLM00 - BL_y) * 50);
+  $BR.attr('cx', BR_x + (BRM10 / BRM00 - BR_x) * 50).attr('cy', BR_y + (BRM01 / BRM00 - BR_y) * 50);
+  $TR.attr('cx', TR_x + (TRM10 / TRM00 - TR_x) * 50).attr('cy', TR_y + (TRM01 / TRM00 - TR_y) * 50);
 }
 player.addEventListener('ended', function () {
   console.log('end');
