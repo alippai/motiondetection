@@ -126,25 +126,25 @@ function computeFrame() {
     x = i % width;
     y = i / width | 0;
 
-    if (x < width / 2 && y < height / 2) {
+    if (x < width * 0.5 && y < height * 0.4) {
       r = 1;g = 0;b = 0;
       TLM00 += intensity;
       TLM10 += x * intensity;
       TLM01 += y * intensity;
     }
-    if (x > width / 2 && y < height / 2) {
+    if (x > width * 0.5 && y < height * 0.4) {
       r = 1;g = 1;b = 0;
       TRM00 += intensity;
       TRM10 += x * intensity;
       TRM01 += y * intensity;
     }
-    if (x > width / 2 && y > height / 2) {
+    if (x > width * 0.5 && y > height * 0.7) {
       r = 1;g = 0;b = 1;
       BRM00 += intensity;
       BRM10 += x * intensity;
       BRM01 += y * intensity;
     }
-    if (x < width / 2 && y > height / 2) {
+    if (x < width * 0.5 && y > height * 0.7) {
       r = 1;g = 1;b = 1;
       BLM00 += intensity;
       BLM10 += x * intensity;
