@@ -89,6 +89,8 @@ function init() {
     ctx1.drawImage(player, 0, 0, c2.width, c2.height);
     var frame = ctx1.getImageData(0, 0, c2.width, c2.height);
     var l = frame.data.length / 4;
+    var width = c2.width | 0;
+    var height = c2.height | 0;
 
     TLM00 = 0;
     TLM10 = 0;
@@ -111,30 +113,37 @@ function init() {
       g = frame.data[i * 4 + 1];
       b = frame.data[i * 4 + 2];
       intensity = (0.2989 * r + 0.5870 * g + 0.1140 * b) | 0;
-      x = i % c2.width;
-      y = (i / c2.width) | 0;
 
-      if (x < c2.width / 2 && y < c2.height / 2) {
+      x = i % width;
+      y = (i / width) | 0;
+
+      if (x < width / 2 && y < height / 2) {
         TLM00 += intensity;
         TLM10 += x * intensity;
         TLM01 += y * intensity;
       }
-      if (x > c2.width / 2 && y < c2.height / 2) {
+      if (x > width / 2 && y < height / 2) {
         TRM00 += intensity;
         TRM10 += x * intensity;
         TRM01 += y * intensity;
       }
-      if (x > c2.width / 2 && y > c2.height / 2) {
+      if (x > width / 2 && y > height / 2) {
         BRM00 += intensity;
         BRM10 += x * intensity;
         BRM01 += y * intensity;
       }
-      if (x < c2.width / 2 && y > c2.height / 2) {
+      if (x < width / 2 && y > height / 2) {
         BLM00 += intensity;
         BLM10 += x * intensity;
         BLM01 += y * intensity;
       }
+
+      frame.data[i * 4] = intensity;
+      frame.data[i * 4 + 1] = intensity;
+      frame.data[i * 4 + 2] = intensity;
+      frame.data[i * 4 + 3] = 255;
     }
+    ctx2.putImageData(frame, 0, 0);
     $TL.attr('cx', TLM10 / TLM00).attr('cy', TLM01 / TLM00);
     $BL.attr('cx', BLM10 / BLM00).attr('cy', BLM01 / BLM00);
     $BR.attr('cx', BRM10 / BRM00).attr('cy', BRM01 / BRM00);
